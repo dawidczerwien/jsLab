@@ -41,9 +41,9 @@ console.log("Updatef");
                 var point = document.createElement("p");
                 point.innerHTML = "p"+i+":";
                 container.appendChild(point);
-                // Append a node with a random text
+                // Append a node with a name of coordinate
                 container.appendChild(document.createTextNode("x" + (i+1)));
-                // Create an <input> element, set its type and name attributes
+                // Create an 3 <input> elements, set its type and name attributes
                 
                 var input = document.createElement("input");
                 input.type = "text";
@@ -75,7 +75,7 @@ console.log("Updatef");
 }
 
 
-
+//funkcja oblicza odległości po każdej zmianie współrzędnych
 function updateff(e)
 {
     console.log("Updateff")
@@ -90,7 +90,7 @@ for (let j=0; j<ile; j++)
         //zapisuję wartości zmiennych do tablicy
     let c = [document.getElementById("x"+String(j)).value,document.getElementById("y"+String(j)).value,document.getElementById("z"+String(j)).value];
     arrayCoordinates.push(c);
-    //document.getElementById("bbb").innerHTML+= String(document.getElementById(idx).value)+"<br>";
+    
     c = [];
     }
 
@@ -99,7 +99,7 @@ distance(arrayCoordinates);
 }
 
 
-
+//funkcja oblicza odległości między punktem początkowym a punktami pośrednimi i wyświetla zawartość na stonie
 function distance(ar) {
     let arrLength = ar.length;
     let distances = [];
