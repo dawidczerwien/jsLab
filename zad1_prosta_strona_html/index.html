@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Tytuł strony</title>
+        <style>
+            body {
+                margin:0;
+            }
+            #header {
+                background-color: gray;
+                padding: 20px;
+                color: white;
+            }
+            #header h1:hover {
+                color: black;
+            }
+            p {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            
+            .linki {
+                margin-left: 20%;
+            }
+            a {
+                text-decoration: none;
+                color: white;
+                display: inline-block;
+                padding: 10px 30px;
+                margin-right:10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                transition-duration: 0.5s;
+                background-color: gray;
+            }
+            a:hover {
+                color: black;
+            }
+            a.a1:hover {
+                background-color: rgb(230, 129, 15);
+            }
+            a.a2:hover {
+                background-color: green;
+            }
+            a.a3:hover {
+                background-color: yellow;
+            }
+            h1 {
+                margin-top: 0;
+            }
+
+            .obrazki {
+                height: auto;
+            }
+            .obrazki img {
+                width: 100%;
+            }
+            #content div {
+                border-bottom: 1px solid gray;
+                margin-top: 40px;
+                margin-left: 10%;
+                margin-right: 10%;
+                margin-bottom: 10px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="header">
+            <h1>HTML</h1>
+        </div>
+        <div id="content">
+            <div class=linki>
+                <p class="akapity">Linki:</p>
+                <a class="a1" href="https://acchou.github.io/html-css-cheat-sheet/html-css-cheat-sheet.html">html-css-cheat-sheet</a>
+                <a class="a2" href="https://www.w3schools.com/html/html_basic.asp">w3schools</a>
+                <a class="a3" href="https://javascript.info/">javascript info</a>
+            </div>
+            <div class=obrazki>
+                <p class="akapity">Obrazki:</p>
+                <img src="obrazek1.png">
+                <img src="obrazek2.png">
+            </div>
+            <div>
+                <p class="akapity">Następny Akapit</p>
+            </div>
+        </div>
+        
+        
+    </body>
+</html>
