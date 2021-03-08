@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+
+<HTML>
+<HEAD>
+ <meta charset="UTF-8">
+Krótka testowa strona
+<style>
+    #bb p{
+        display: inline-block;
+        margin-right: 10px;
+    }
+    input {
+        width: 40px;
+    }
+</style>
+</HEAD>
+
+<BODY style="background-color:grey; ">
+<H1> Ile pol </H1>
+Seria inputow <p id="bb" ></p>
+<form>
+<br>
+Ile pol : <input type=number id="nf" name="nf" 
+value=1 onchange="updatef(this.form,'r'); ">
+</form>
+
+<div id="bbb">___ </div>
+<!---   dynamiczne inputy (trzeba uzywac child) ---> 
+<script>
+function updatef()
+{
+var ile=parseInt(document.getElementById("nf").value);
+console.log("Updatef");
+ var container=document.getElementById("bb");
+ while (container.hasChildNodes()) {
+                container.removeChild(container.lastChild);
+                
+            }
+            for (i=0;i<ile;i++){
+                var point = document.createElement("p");
+                point.innerHTML = "p"+i+":";
+                container.appendChild(point);
+                // Append a node with a random text
+                container.appendChild(document.createTextNode("x" + (i+1)));
+                // Create an <input> element, set its type and name attributes
+                
+                var input = document.createElement("input");
+                input.type = "text";
+                input.name = "x" + i;
+                input.id = "x" + i;
+                input.value = 0;
+		        input.addEventListener('input', updateff);        
+                container.appendChild(input);
+
+                var input2 = document.createElement("input");
+                input2.type = "text";
+                input2.name = "y" + i;
+                input2.id = "y" + i;
+                input2.value = 0;
+                input2.addEventListener('input', updateff);
+                container.appendChild(document.createTextNode("y" + (i+1)));
+                container.appendChild(input2);
+
+                var input3 = document.createElement("input");
+                input3.type = "text";
+                input3.name = "z" + i;
+                input3.id = "z" + i;
+                input3.value = 0;
+                input3.addEventListener('input', updateff);
+                container.appendChild(document.createTextNode("z" + (i+1)));
+                container.appendChild(input3);
+                container.appendChild(document.createElement("br"));
+            }
+}
+
+
+
+function updateff(e)
+{
+    console.log("Updateff")
+var idx="";
+var arrayCoordinates = [];
+ var ile=parseInt(document.getElementById("nf").value);
+document.getElementById("bbb").innerHTML="";
+
+
+for (let j=0; j<ile; j++)
+    {
+        //zapisuję wartości zmiennych do tablicy
+    let c = [document.getElementById("x"+String(j)).value,document.getElementById("y"+String(j)).value,document.getElementById("z"+String(j)).value];
+    arrayCoordinates.push(c);
+    //document.getElementById("bbb").innerHTML+= String(document.getElementById(idx).value)+"<br>";
+    c = [];
+    }
+
+
+distance(arrayCoordinates);
+}
+
+
+
+function distance(ar) {
+    let arrLength = ar.length;
+    let distances = [];
+    let sum = 0;
+    for (let i=0; i<arrLength-1; i++) {
+        let odl = formula(ar[i][0],ar[i][1],ar[i][2],ar[i+1][0], ar[i+1][1], ar[i+1][2]);
+        sum+= odl;
+        console.log("odl: "+odl);
+
+        document.getElementById("bbb").innerHTML+= String("odległość między p0 a p"+(i+1)+" wynosi: "+sum)+"<br>";
+        
+
+    }
+    
+}
+//funkcja oblicza odległość między dwoma punktami
+function formula(x0,y0,z0,x1,y1,z1) {
+    return Math.sqrt(Math.pow((x1-x0),2)+Math.pow((y1-y0),2)+Math.pow((z1-z0),2));
+}
+
+</script>
+
+
+
+</BODY>
+</HTML>
