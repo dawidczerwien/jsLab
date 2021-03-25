@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <META charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        td {
+            padding-right: 10px;
+            border: 1px solid black;
+        }
+        #t1 {
+            
+            float: left;
+        }
+
+        #t2 {
+            float: left;
+            margin-left: 80px;
+            
+            padding: 10px;
+        }
+        #b1 {
+            
+            
+        }
+    </style>
+  <title>CSV File to HTML</title>
+  
+  
+ </head>
+ <body>
+    <script>
+        var myDict = new Object();
+        //console.log(myDict[1950]);
+        getData();
+        async function getData() {
+            //function
+            const response = await fetch('ro.csv');
+            const data = await response.text();
+            const dataSplit = data.split(';');
+            
+            $('#t1').append('<table>');
+            for (var i = 3; i< dataSplit.length; i+=5) {
+                if (i > 5) {
+                    //console.log(dataSplit[i] + " : " + dataSplit[i+1]);
+                    $('#t1').append('<tr>');
+                    $('#t1').append('<td>'+dataSplit[i]+'</td>');
+                    $('#t1').append('<td>'+(parseFloat(dataSplit[i+1])-100).toFixed(1)+'</tr>');
+                        myDict[parseInt(dataSplit[i])]=(parseFloat(dataSplit[i+1])-100).toFixed(1);
+                        
+                } else {
+
+                
+                    //console.log(dataSplit[i] + " : " + dataSplit[i+1]);
+                    $('#t1').append('<tr>');
+                    $('#t1').append('<td>'+dataSplit[i]+'</td>');
+                    $('#t1').append('<td>'+dataSplit[i+1]+'</tr>');
+                    }
+                    
+            }
+            //console.log(myDict[1950]);
+            $('#t1').append('</table>');
+            
+            $(document).ready(function(){
+                $("button").click(function(){
+                    var rokA = $("#i1").val()
+                    var rokB = $("#i2").val()
+                console.log(rokA +":"+rokB);
+                
+                var s = 100;
+                for (var i = rokA; i<=rokB; i++) {
+                    var strata = obliczStrate(s, myDict[i]);
+                    console.log(strata);
+                    s = s - strata;
+                    console.log('s: '+s);
+                }
+                $('#wynik').text("Wynik: " + s);
+
+                $("#t2").children().css({"color": "red"});
+            
+
+})
+ });
+
+            
+        };
+
+       
+
+
+        
+        function obliczStrate(kwota, p) {
+            //console.log(kwota*(p/100));
+            return kwota*(p/100);
+        }
+        
+
+        
+        </script>
+    <div id='t1'><h3>Inflacja roczna od 1950 do 2020</h3></div>
+    
+      
+      </form>
+    <div id='t2'>
+        <h2>Wartość 100 zł pomiędzy latami: </h2>
+        Rok początkowy: <input type="text" value = "2010" id="i1"><br>
+        Rok końcowy: <input type="text" value = "2012" id="i2"><br>
+        <p id="wynik">Wynik: </p>
+
+        <button id='b1'>Guzik </button>
+    </div>
+    
+ </body>
+</html>
+
+
+
