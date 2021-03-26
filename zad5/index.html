@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <META charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        td {
+            padding-right: 10px;
+            border: 1px solid black;
+        }
+        #t1 {
+            
+            float: left;
+        }
+
+        #t2 {
+            float: left;
+            margin-left: 80px;
+            
+            padding: 10px;
+        }
+        
+    </style>
+  <title>CSV File to HTML</title>
+  
+  
+ </head>
+ <body>
+    <script>
+        let myData = new Object();
+        fetch('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json').then(response => {
+            myData = response.json();
+            return myData;
+        }).then(myData =>{
+            console.log(Object.keys(myData['POL']));
+            
+        })
+        //console.log(myDict[2]);
+        /*
+        getData();
+        async function getData() {
+            const response = await fetch('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json');
+            myDict = await response.json();
+            console.log(myDict);
+        }
+        */
+            
+        
+        </script>
+    <div id='t1'><h3>Inflacja roczna od 1950 do 2020</h3></div>
+    
+      
+      </form>
+    <div id='t2'>
+        <h2>Wartość 100 zł pomiędzy latami: </h2>
+        Rok początkowy: <input type="text" value = "2010" id="i1"><br>
+        Rok końcowy: <input type="text" value = "2012" id="i2"><br>
+        <p id="wynik">Wynik: </p>
+
+        <button id='b1'>Guzik </button>
+    </div>
+    
+ </body>
+</html>
+
+
+
