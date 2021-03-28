@@ -4,21 +4,15 @@
     <META charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        td {
-            padding-right: 10px;
-            border: 1px solid black;
-        }
-        #t1 {
-            
-            float: left;
-        }
-
-        #t2 {
-            float: left;
-            margin-left: 80px;
-            
-            padding: 10px;
-        }
+        #timeToRender {
+		position:absolute; 
+		top: 10px; 
+		font-size: 20px; 
+		font-weight: bold; 
+		background-color: #d85757;
+		padding: 0px 4px;
+		color: #ffffff;
+	}
         
     </style>
   <title>CSV File to HTML</title>
@@ -32,34 +26,56 @@
             myData = response.json();
             return myData;
         }).then(myData =>{
-            console.log(Object.keys(myData['POL']));
+            //console.log(Object.keys(myData['POL']));
             
-        })
-        //console.log(myDict[2]);
-        /*
-        getData();
-        async function getData() {
-            const response = await fetch('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json');
-            myDict = await response.json();
-            console.log(myDict);
+            
+            window.onload = function () {
+
+            var dataPoints = [];
+            var y = 1000;
+            var limit = 50000;
+
+            for ( var i = 0; i < myData['POL']['data'].length; i++ ) {
+                let d = myData['POL']['data'][i]['date'];
+                let c = myData['POL']['data'][i]['new_cases'];
+                dataPoints.push({
+                x: new Date(d),
+                y: c
+		});
+            }
+            var options = {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Daily New Cases"
+                },
+                axisX: {
+                    valueFormatString: "DD MMM YYYY",
+                },
+                axisY: {
+                    title: "Number of infected",
+                    titleFontSize: 24
+                },
+                data: [{
+                    type: "spline", 
+                    //yValueFormatString: "$#,###.##",
+                    dataPoints: dataPoints
+                }]
+            };
+            
+            $("#chartContainer").CanvasJSChart(options);
+            
+                
+                        
+            }
         }
-        */
-            
+        );
         
         </script>
-    <div id='t1'><h3>Inflacja roczna od 1950 do 2020</h3></div>
     
-      
-      </form>
-    <div id='t2'>
-        <h2>Wartość 100 zł pomiędzy latami: </h2>
-        Rok początkowy: <input type="text" value = "2010" id="i1"><br>
-        Rok końcowy: <input type="text" value = "2012" id="i2"><br>
-        <p id="wynik">Wynik: </p>
-
-        <button id='b1'>Guzik </button>
-    </div>
-    
+    <div id="chartContainer" style="height: 370px; width: 60%;"></div>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
  </body>
 </html>
 
