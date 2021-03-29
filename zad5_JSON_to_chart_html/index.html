@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <META charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #container {
+            margin-right: 10%;
+        }
+        
+    </style>
+  <title>CSV File to HTML</title>
+  
+  
+ </head>
+ <body>
+    <script>
+        let myData = new Object();
+        let country;
+        let typeCase;
+
+        $ (document).ready(function(){
+            fetch('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json')
+            .then(response => {
+                myData = response.json();
+                return myData;
+            }).then(myData =>{
+                //add country to select option input
+                for (let i = 0; i<Object.keys(myData).length; i++) {
+                    let eachCountry = Object.keys(myData)[i];
+                    $('#mySelect')
+                    .append("<option value="+eachCountry+">"+ myData[eachCountry]['location'] +"</option>");
+                }
+
+                $('#show').click(function(){
+                country = $( "#mySelect option:selected" ).val();
+                typeCase = $( "#typeSelect option:selected" ).val();
+                
+                var dataPoints = [];
+                
+                for ( var i = 0; i < myData[country]['data'].length; i++ ) {
+                    //put data to list
+                    let d = myData[country]['data'][i]['date'];
+                    let c = myData[country]['data'][i][typeCase];
+                    if (c<0) {
+                        //w niektórych krajach Afryki zdarza się ujemna liczba zarażeń
+                        c = -c;
+                    }
+                    dataPoints.push({
+                    x: new Date(d),
+                    y: c
+                    });
+                }
+                var options = {
+                    animationEnabled: true,
+                    theme: "dark2",
+                    title: {
+                        text: "Daily " + typeCase
+                    },
+                    axisX: {
+                        valueFormatString: "DD MMM YYYY",
+                    },
+                    axisY: {
+                        title: "Number of people",
+                        titleFontSize: 24
+                    },
+                    data: [{
+                        type: "column",
+                        dataPoints: dataPoints
+                    }]
+                };
+                
+                $("#chartContainer").CanvasJSChart(options); 
+            })
+
+            });
+                
+            
+            
+        }
+        )
+        </script>
+    
+    <div id ="container">
+
+        <select id="mySelect">
+        </select>
+
+        <select id="typeSelect">
+            <option value="new_cases">New cases</option>
+            <option value="new_deaths">New deaths</option>
+            <option value="new_tests">New tests</option>
+        </select>
+
+        <button id="show">Show</button>
+    </div>
+
+    <div id="chartContainer" style="height: 370px; width: 80%;"></div>
+
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+ </body>
+</html>
+
+
+
