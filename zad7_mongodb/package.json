@@ -1,0 +1,16 @@
+{
+  "name": "zad7_mongodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hello_mongo_create.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "formidable": "^1.2.2",
+    "http-server": "^0.12.3",
+    "mongodb": "^3.6.6"
+  }
+}
