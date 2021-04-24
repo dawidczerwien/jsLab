@@ -1,0 +1,25 @@
+<h1> Main Page</h1>
+<form action="/api/login" method="GET">
+    <input type="submit" value="Login" />
+</form>
+<form action="/api/register" method="GET">
+    <input type="submit" value="Register" />
+</form>
+<div class="posts">
+    
+    <% result.forEach(function(post){ %>
+        <div style="border:1px solid black; padding: 20px; border-radius: 25px;">
+            <a href=<%="post/" + post._id %> ><h2><%= post.title %></h2></a>
+            <p><%= post.description %></p>
+            <p><%= (new Date( post.date )).toLocaleString() %></p>
+            
+              <form action="/api/deletePost" method="post">
+              <input type="hidden" name="id" value= <%= post._id %> >
+              <input type="submit" value="Delete Post" />
+              
+              </form>
+              
+            </div>
+        <br>
+      <% }); %>
+</div>
