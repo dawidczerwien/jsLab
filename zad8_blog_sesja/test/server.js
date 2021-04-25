@@ -9,7 +9,7 @@ app.use(session({secret: "Shh, its a secret!",resave: true,saveUninitialized: tr
 //const MongoClient = require('mongodb').MongoClient;
 const mongodb = require('mongodb');
 var url = "mongodb://localhost:27017/db1";
-app.set('view-engine', 'ejs')
+app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false}));
 
 app.get('/', function(req, res){
@@ -148,6 +148,27 @@ app.get('/post/:id', function(req, res){
       
       db.close();
     });
+});
+app.post('/api/addComment', function(req, res){
+  if (req.session.userId) {
+    
+    var myobj = {'userId': req.session.userId, 'userLogin': req.session.login, 'title': req.body.title, 'description': req.body.description, date: new Date};
+    console.log(myobj);
+    mongodb.connect(url, function(err, db) {
+      if (err) throw err;
+        var dbo = db.db("db1");
+        dbo.collection("studenci3").updateOne({'_id': new mongodb.ObjectID(req.body.id)}, {$push: {comments: {'userId': req.session.userId, 'userLogin': req.session.login, 'comment': req.body.comment, date: new Date}}}, function(err, res) {
+                if (err) throw err;
+                console.log('New comment Added');
+                db.close();
+              });
+              
+  });
+    res.render('restrictedPage.ejs', {data: req.session.login});
+  } else {
+    res.render('loginPage.ejs');
+  }
+  
 });
 
 app.listen(3000);

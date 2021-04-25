@@ -11,11 +11,26 @@
     
     
 </div>
+<br>
+<div class="comments" style="border:1px solid black; padding: 20px; border-radius: 25px;">
+    <% if (result[0].comments) { %>
+        <% result[0].comments.forEach(function(iteration){ %>
+            <div class="comment">
+                <h3> <%= iteration.comment %> </h3>
+                <p>Comment by: <%= iteration.userLogin %></p>
+        <p>Date: <%= (new Date( iteration.date )).toLocaleString() %></p>
+            </div>
+        <% }); %>
+    <% } else { %>
+        no comments
+        <% }; %>
+    
+</div>
 <div class="addComment">
     <h2>Add new comment</h2>
-    <form action="/api/addPost" method="POST">
-        <p>Title: </p><input type="text" id="title" name="title">
-        <p>Description: </p><input type="text" id="description" name="description" row=2>
+    <form action="/api/addComment" method="POST">
+        <p>Title: </p><input type="text" id="comment" name="comment">
+        <input type="hidden" name="id" value= <%= result[0]._id %> >
         <input type="submit" value="Add new comment" />
     </form>
 </div>
