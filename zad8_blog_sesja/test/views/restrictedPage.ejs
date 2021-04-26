@@ -8,8 +8,8 @@
 <div class="addPostContainer">
     <h2>Add new post</h2>
     <form action="/api/addPost" method="POST">
-        <p>Title: </p><input type="text" id="title" name="title">
-        <p>Description: </p><input type="text" id="description" name="description" row=2>
+        <p>Title: </p><input required type="text" id="title" name="title">
+        <p>Description: </p><textarea required type="text" id="description" name="description" rows=4 cols="60"></textarea>
         <input type="submit" value="Add new post" />
     </form>
 </div>
