@@ -1,23 +1,23 @@
-var express = require('express');
-var app = express();
-var cookieParser = require('cookie-parser');
+const express = require('express');
+const app = express();
+const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-var session = require('express-session');
-app.use(session({secret: "Shh, its a secret!",resave: true,saveUninitialized: true, cookie : {
+const session = require('express-session');
+app.use(session({secret: "session",resave: true,saveUninitialized: true, cookie : {
     maxAge:(1000 * 60 * 15)
 }}));
 const bcrypt = require('bcrypt');
 const salt = 10;
 const mongodb = require('mongodb');
-var url = "mongodb://localhost:27017/db1";
+const url = "mongodb://localhost:27017/db1";
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false}));
 
 app.get('/', function(req, res){
    mongodb.connect(url, function(err, db) {
        if (err) throw err;
-         var dbo = db.db("db1");
-         dbo.collection("studenci4").find({title: { $exists: true }}).toArray(function(err, result) {
+         const dbo = db.db("db1");
+         dbo.collection("blog").find({title: { $exists: true }}).toArray(function(err, result) {
            if (err) throw err;
             //console.log(result);
             res.render('home.ejs', {result: result});
@@ -49,8 +49,8 @@ app.post('/api/logout', function(req, res){
 app.post('/api/login', function(req, res) {
   mongodb.MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-          var dbo = db.db("db1");
-          dbo.collection("studenci4").find({login: req.body.login}).toArray(async function(err, result) {
+          const dbo = db.db("db1");
+          dbo.collection("blog").find({login: req.body.login}).toArray(async function(err, result) {
             console.log(result[0])
             if (err) throw err;
             //console.log(result);
@@ -104,24 +104,23 @@ app.post('/api/register', async function(req, res){
       myobj = {'login': req.body.login, 'passwd': hashedpasswd};
       mongodb.connect(url, function(err, db) {
         if (err) throw err;
-          var dbo = db.db("db1");
-          dbo.collection("studenci4").findOne({'login': req.body.login}, function(err, result) {
+          const dbo = db.db("db1");
+          dbo.collection("blog").findOne({'login': req.body.login}, function(err, result) {
             db.close();
             register(result);
           });        
       });
       function register(resultFind){
-        //console.log(resultFind);
         mongodb.connect(url, function(err, db) {
           if (resultFind) {
             console.log('Użytkownik już istnieje');
             res.send('Not registerd! User already exists');
           } else {
-            var dbo = db.db("db1");
-            dbo.collection("studenci4").insertOne(myobj, function(err, result) {
+            const dbo = db.db("db1");
+            dbo.collection("blog").insertOne(myobj, function(err, result) {
               
               if (err) {
-                res.send('Not registerd');
+                res.send('Not registered');
                 throw err;
               }
               console.log('zarejestrowano');
@@ -138,19 +137,18 @@ app.post('/api/register', async function(req, res){
 app.post('/api/addPost', function(req, res){
   if (req.session.userId) {
     
-    var myobj = {'userId': req.session.userId, 'userLogin': req.session.login, 'title': req.body.title, 'description': req.body.description, date: new Date};
+    const myobj = {'userId': req.session.userId, 'userLogin': req.session.login, 'title': req.body.title, 'description': req.body.description, date: new Date};
     console.log(myobj);
     mongodb.connect(url, function(err, db) {
       if (err) throw err;
-        var dbo = db.db("db1");
-        dbo.collection("studenci4").insertOne(myobj, function(err, res) {
+        const dbo = db.db("db1");
+        dbo.collection("blog").insertOne(myobj, function(err, res) {
                 if (err) throw err;
                 console.log('New post Added');
                 db.close();
               });
               
   });
-    //res.render('restrictedPage.ejs', {data: req.session.login});
     res.redirect("/");
   } else {
     res.render('loginPage.ejs');
@@ -159,13 +157,13 @@ app.post('/api/addPost', function(req, res){
 });
 app.post('/api/deletePost', function(req, res){
   if (req.session.userId) {
-    var myobj = {'_id': new mongodb.ObjectID(req.body.id)};
+    const myobj = {'_id': new mongodb.ObjectID(req.body.id)};
     if (req.session.login == req.body.userLogin) {
       mongodb.connect(url, function(err, db) {
         if (err) throw err;
-          var dbo = db.db("db1");
+          const dbo = db.db("db1");
           
-                dbo.collection("studenci4").deleteOne(myobj, function(err, res) {
+                dbo.collection("blog").deleteOne(myobj, function(err, res) {
                   if (err) throw err;
                 
           
@@ -186,8 +184,8 @@ app.get('/api/post/:id', function(req, res){
   console.log(req.params.id);
   mongodb.connect(url, function(err, db) {
     if (err) throw err;
-      var dbo = db.db("db1");
-      dbo.collection("studenci4").find({'_id': new mongodb.ObjectID(req.params.id)}).toArray(function(err, result) {
+      const dbo = db.db("db1");
+      dbo.collection("blog").find({'_id': new mongodb.ObjectID(req.params.id)}).toArray(function(err, result) {
         if (err) throw err;
          console.log(result);
          res.render('postPage.ejs', {result: result});
@@ -199,19 +197,18 @@ app.get('/api/post/:id', function(req, res){
 app.post('/api/addComment', function(req, res){
   if (req.session.userId) {
     
-    var myobj = {'userId': req.session.userId, 'userLogin': req.session.login, 'title': req.body.title, 'description': req.body.description, date: new Date};
+    const myobj = {'userId': req.session.userId, 'userLogin': req.session.login, 'title': req.body.title, 'description': req.body.description, date: new Date};
     console.log(myobj);
     mongodb.connect(url, function(err, db) {
       if (err) throw err;
-        var dbo = db.db("db1");
-        dbo.collection("studenci4").updateOne({'_id': new mongodb.ObjectID(req.body.id)}, {$push: {comments: {'userId': req.session.userId, 'userLogin': req.session.login, 'comment': req.body.comment, date: new Date}}}, function(err, res) {
+        const dbo = db.db("db1");
+        dbo.collection("blog").updateOne({'_id': new mongodb.ObjectID(req.body.id)}, {$push: {comments: {'userId': req.session.userId, 'userLogin': req.session.login, 'comment': req.body.comment, date: new Date}}}, function(err, res) {
                 if (err) throw err;
                 console.log('New comment Added');
                 db.close();
               });
               
   });
-    //res.render('restrictedPage.ejs', {data: req.session.login});
     res.redirect('post/'+req.body.id);
   } else {
     res.render('loginPage.ejs');

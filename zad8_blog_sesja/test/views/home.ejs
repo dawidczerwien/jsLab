@@ -7,7 +7,7 @@
     <% result.forEach(function(post){ %>
         <div style="border:1px solid black; padding: 20px; border-radius: 25px;">
             <a href=<%="api/post/" + post._id %> ><h2><%= post.title %></h2></a>
-            <p><%= post.description %></p>
+            <h3><%= post.description %></h3>
             <p>Post created by: <%= post.userLogin %></p>
             <p><%= (new Date( post.date )).toLocaleString() %></p>
             
