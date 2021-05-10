@@ -12,10 +12,10 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
   socket.on('add user', (val) => {
     console.log(val);
     user=val;
+    io.emit('user joined', {msguser: user});
   });
   
   socket.on('disconnect', () => {
@@ -24,8 +24,8 @@ io.on('connection', (socket) => {
   });
 
   
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', {msg: msg,msguser: user});
+  socket.on('chat message', (data) => {
+    io.emit('chat message', {msg: data.msg,msguser: data.msguser});
   });
 });
 

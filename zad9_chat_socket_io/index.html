@@ -13,7 +13,7 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages > li { padding: 0.5rem 1rem; -webkit-border-radius: 30px;
 -moz-border-radius: 30px;
-border-radius: 30px; background-color: rgb(44, 97, 241); width: fit-content;}
+border-radius: 30px; background-color: rgb(77, 122, 245); width: fit-content;}
       
       #messages > p {font-size: 10px; margin-left: 20px; padding: 0; margin-bottom: 2px;}
     </style>
@@ -40,7 +40,7 @@ var messages = document.getElementById('messages');
 
   var login = document.getElementById('login');
   var userName = document.getElementById('userName');
-
+  var user;
 function setOpacity(idElement, opacity) {
   let el = document.getElementById(idElement);
   el.style.opacity = opacity;
@@ -52,6 +52,7 @@ function addUser(input) {
     socket.emit('add user', input.value);
     setOpacity('login', 0);
     setOpacity('form', 1);
+    user=input.value;
   }
   
 };
@@ -60,11 +61,17 @@ function addUser(input) {
     e.preventDefault();
     
     if (input.value) {
-      socket.emit('chat message', input.value);
+      socket.emit('chat message', {msg: input.value, msguser: user});
       input.value = '';
     }
   });
-  
+  socket.on("connect", () => {
+    socket.on('user joined', function({msg, msguser}) {
+    var user = document.createElement('p');
+    user.textContent = msguser+' connected';
+    messages.appendChild(user);    
+  });
+});
   socket.on('chat message', function({msg, msguser}) {
     var user = document.createElement('p');
     user.textContent = msguser+':';
