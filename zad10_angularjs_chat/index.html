@@ -23,18 +23,20 @@ border-radius: 30px; background-color: rgb(0, 132, 255); width: fit-content;}
   <body>
     <ul id="messages"></ul>
     <div ng-app="app1" ng-controller="myCtrl1">
-      <div id="login" autocomplete="off">
+      <div id="login">
         <p>
           Enter user name: {{login}}
         </p>
-        <input id="userName" type="text" onkeydown="addUser(this)" ng-model="login">
+        <form id="formChat" action="" ng-submit="startChat($event)" autocomplete="off">
+          <input id="userName" type="text" ng-model="login">
+        </form>
       </div>
 
-      <form id="form" action="">
+      <form id="form" action="" ng-submit="sendMsg($event)">
         <p>
           Logged as: {{login}}
         </p>
-        <input id="input" autocomplete="off" /><button>Send</button>
+        <input id="input" autocomplete="off" ng-model="msgInput" /><button>Send</button>
       </form>
 
     </div>
@@ -43,42 +45,40 @@ border-radius: 30px; background-color: rgb(0, 132, 255); width: fit-content;}
     <script>
   var socket = io();
   var messages = document.getElementById('messages');
-  var form = document.getElementById('form');
-  var input = document.getElementById('input');
-
-  var login = document.getElementById('login');
-  var userName = document.getElementById('userName');
   var userlogin;
-  
-  var app = angular.module('app1', []);
-  app.controller('myCtrl1', function($scope) {
-  $scope.login= "John";
-});
-function setOpacity(idElement, opacity) {
+
+  function setOpacity(idElement, opacity) {
   let el = document.getElementById(idElement);
   el.style.opacity = opacity;
 };
-
 setOpacity('form', 0);
 
-function addUser(input) {
-  if (event.key === 'Enter') {
-    socket.emit('add user', input.value);
+
+  var app = angular.module('app1', []);
+  app.controller('myCtrl1', function($scope) {
+  $scope.login= "John";
+  
+
+  $scope.startChat = function(e) {
+    e.preventDefault();
+    socket.emit('add user', $scope.login);
     setOpacity('login', 0);
     setOpacity('form', 1);
-    userlogin=input.value;
-  }
-};
-  
-  form.addEventListener('submit', function(e) {
+    userlogin=$scope.login;
+  };
+
+
+  $scope.sendMsg = function(e) {
     e.preventDefault();
-    
-    if (input.value) {
-      socket.emit('chat message', {msg: input.value, msguser: userlogin});
-      input.value = '';
+    if ($scope.msgInput) {
+      socket.emit('chat message', {msg: $scope.msgInput, msguser: userlogin});
+      $scope.msgInput = '';
+      
     }
-  });
+  };
   
+});
+
 socket.on('user joined', function({msg, msguser}) {
       var user = document.createElement('p');
       user.textContent = msguser+' connected';
