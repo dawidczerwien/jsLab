@@ -1,0 +1,90 @@
+<html>
+   <head>
+      <title>Angular JS Forms</title>
+      <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
+
+   </head>
+   <body>
+
+      <h2>Przykładowy formularz</h2>
+      <div ng-app = "Apl" ng-controller = "kontroler">
+
+         <form name = "formularz" novalidate>
+            <table border = "0">
+               <tr>
+                  <td>Imie:</td>
+                  <td><input name = "imie" type = "text" ng-model = "imie" required>
+                     <span style = "color:red" ng-show = "formularz.imie.$dirty && formularz.imie.$invalid">
+                        <span ng-show = "formularz.imie.$error.required">Trzeba podać imie.</span>
+                     </span>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>Nazwisko: </td>
+                  <td><input name = "nazwisko"  type = "text" ng-model = "nazwisko" required>
+                     <span style = "color:red" ng-show = "formularz.nazwisko.$dirty && formularz.nazwisko.$invalid">
+                        <span ng-show = "formularz.nazwisko.$error.required">Trzeba podać nazwisko.</span>
+                     </span>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>e-mail: </td><td><input name = "email" type = "email" ng-model = "email" length = "120" required>
+                     <span style = "color:red" ng-show = "formularz.email.$dirty && formularz.email.$invalid">
+                        <span ng-show = "formularz.email.$error.required">Trzeba podać email.</span>
+                        <span ng-show = "formularz.email.$error.email">Niewłaściwy email.</span>
+                     </span>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     <button ng-click = "reset()">Wyczyść</button>
+                  </td>
+                  <td>
+                     <button ng-disabled = "formularz.imie.$dirty &&
+                        formularz.imie.$invalid || formularz.nazwisko.$dirty &&
+                        formularz.nazwisko.$invalid || formularz.email.$dirty &&
+                        formularz.email.$invalid" ng-click="submit()">Wyslij</button>
+                  </td>
+               </tr>
+
+            </table>
+         </form>
+      </div>
+
+      <script>
+         var Apl = angular.module("Apl", []);
+
+         Apl.controller('kontroler', function($scope,$http) {
+            $scope.reset = function() {
+               $scope.imie = "Jan";
+               $scope.nazwisko = "Kowalski";
+               $scope.email = "jankowalski@onet.pl";
+            }
+            $scope.submit = function() {
+            //console.log("test"); // wchodzi
+              $http({ method  : 'POST',
+                                url     :  'http://localhost:8080/aa',
+                                    data    : formularz,
+                                headers :  [{'Content-Type': 'application/json'} , 
+	                {'Access-Control-Allow-Origin': '*'},
+	                {'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'},
+	                {'Access-Control-Allow-Headers':'X-Requested-With'}]	 
+                            }).success(function(formularz) {
+                        $scope.content = formularz;
+                          });
+              
+};
+              
+              $scope.reset();
+         });
+
+
+
+      </script>
+
+   </body>
+</html>
