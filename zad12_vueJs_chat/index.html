@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      #login {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border:1px solid black; padding: 20px; border-radius: 25px; width: fit-content;}
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      #form > p {margin:auto}
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; -webkit-border-radius: 30px;
+-moz-border-radius: 30px;
+border-radius: 30px; background-color: rgb(0, 132, 255); width: fit-content;}
+      
+      #messages > p {font-size: 10px; margin-left: 20px; padding: 0; margin-bottom: 2px;}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <div id="app1" >
+      <div id="login">
+        <p>
+          Enter user name: {{login}}
+        </p>
+        <form id="formChat" action="" v-on:submit.prevent='startChat' autocomplete="off">
+          <input id="userName" v-model="login">
+          
+        </form>
+      </div>
+
+      <form id="form" action="" v-on:submit.prevent='sendMsg' autocomplete="off">
+        <p>
+          Logged in as: {{login}}
+        </p>
+        <input id="input" v-model="msg" autocomplete="off" v-on:submit.prevent='startChat' /><button>Send</button>
+      </form>
+
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+  var socket = io();
+  var messages = document.getElementById('messages');
+  var userlogin;
+
+  function setOpacity(idElement, opacity) {
+  let el = document.getElementById(idElement);
+  el.style.opacity = opacity;
+};
+setOpacity('form', 0);
+
+new Vue({
+  el: '#app1',
+  data: {
+    login: 'John',
+    msg: '',
+  },
+  methods: {
+    startChat: function(){
+      socket.emit('add user', this.login);
+      setOpacity('login', 0);
+      setOpacity('form', 1);
+      userlogin=this.login; 
+    },
+    sendMsg: function() {
+      if (this.msg) {
+      socket.emit('chat message', {msg: this.msg, msguser: this.login});
+      this.msg = '';
+    }
+    }
+  }
+})
+
+socket.on('user joined', function({msg, msguser}) {
+      var user = document.createElement('p');
+      user.textContent = msguser+' connected';
+      messages.appendChild(user);    
+      user.scrollIntoView();
+});
+
+socket.on('user disconnect', function({msg, msguser}) {
+      var user = document.createElement('p');
+      user.textContent = msguser+' disconnected';
+      messages.appendChild(user);    
+      user.scrollIntoView();
+});
+
+socket.on('send history', function({data, userh}) {
+      if (userh === userlogin) {
+        for(var i=0; i<data.length; i++) {
+          var user = document.createElement('p');
+          user.textContent = data[i].msguser+':';
+          messages.appendChild(user);
+
+          var item = document.createElement('li');
+          item.textContent = data[i].msg;
+          messages.appendChild(item);
+          item.scrollIntoView();
+        };
+      }     
+});
+
+socket.on('chat message', function({msg, msguser}) {
+    var user = document.createElement('p');
+    user.textContent = msguser+':';
+    messages.appendChild(user);
+
+    var item = document.createElement('li');
+    item.textContent = msg;
+    messages.appendChild(item);
+    item.scrollIntoView();
+  });
+
+    </script>
+  </body>
+</html>
